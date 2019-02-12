@@ -28,7 +28,7 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Lavendar Bar Soap (6)", "Personal Care", 12.69, 35);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Walk Your Own Path", "Books", 14.95, 26);
+VALUES ("Walk Your Own Path (Fiction)", "Books", 14.95, 26);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Sectional Couch", "Furniture", 399.99, 5);
