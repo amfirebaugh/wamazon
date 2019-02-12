@@ -59,15 +59,15 @@ function purchase() {
                     chosenProduct = results[i];
                 }
             }
-            // console.log(chosenProduct.product_name);
-            // console.log(chosenProduct.stock_quantity); // this is the stock_quantity from the table
 
             // determine if there is enough stock of the item the client is trying to purchase
             if (chosenProduct.stock_quantity > parseInt(answer.quantity)) {
             // if the stock_quantity is greater than then quantity asked for from the user...then update the table and tell client the cost of their order
+
             // newQuantity doesn't seem to be working...or the update doesn't seem to be working
             var newQuantity = chosenProduct.stock_quantity - answer.quantity;
             console.log(newQuantity); // this is working... however the UPDATE below is not working...
+            console.log(chosenProduct.item_id);
             // console.log(answer.newQuantity); undefined
             // console.log(chosenProduct.newQuantity); undefined
             connection.query(
@@ -77,7 +77,7 @@ function purchase() {
                     stock_quantity: newQuantity
                 },
                 {
-                    id: chosenProduct.id
+                    item_id: chosenProduct.item_id
                 }
                 ],
                 function(error) {
@@ -86,24 +86,32 @@ function purchase() {
                     }
                 }
             );
-            // console.log(chosenProduct.price);
-            // console.log(chosenProduct.price * answer.quantity);
-            var orderPrice = chosenProduct.price * answer.quantity;
-            console.log("The cost of your order is: " + orderPrice);
-            console.log(chosenProduct);
-            // I'D LIKE TO CODE IN AN INQUIRER PROMPT TO EITHER YES --> purchase(); OR NO --> exit();
-            // purchase();
-            process.exit();
 
-            }
-            else {
+            var orderPrice = chosenProduct.price * answer.quantity;
+            // below shows the client the cost of their order, reminds them what they ordered, how many, and displays the price in the format example: $21.00 (two decimals)
+            console.log("The cost of your order of " + answer.quantity + " " + chosenProduct.product_name + "(s) is: $" + orderPrice.toFixed(2) + "\n");
+
+            console.log(chosenProduct);
+
+            } else {
             // If client asked for too many of an item the below code begins
             console.log("Sorry, we do not currently that quantity of your selected item.");
-            // I'D LIKE TO CODE IN AN INQUIRER PROMPT TO EITHER YES --> purchase(); OR NO --> exit();
-            // purchase();
-            process.exit();
             }
-         // End the .then promise/function
-         });
-     });
-    }
+
+            // At the end of the original purchase request this prompt comes up so the client can chose to make another purchase or exit the application.
+            inquirer.prompt({
+                name: "purchaseORexit",
+                type: "list",
+                message: "Would you like to make another purchase, or exit Wamazon?",
+                choices: ["Another Purchase", "Exit"]
+            }).then(function(resp) {
+                if (resp.purchaseORexit === "Another Purchase") {
+                    purchase();
+                } else if (resp.purchaseORexit === "Exit") {
+                    process.exit();
+                }
+            });
+         // End the .then promise/function from the answer from the purchase function
+        });
+    });
+}
