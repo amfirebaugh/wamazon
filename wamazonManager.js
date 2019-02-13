@@ -77,7 +77,60 @@ function selectLow() {
 }
 
 function addQuantity() {
-    console.log("addquantity function");
+    connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, results) {
+        if (err) {
+            throw err;
+        }
+        inquirer.prompt([
+            {
+              name: "addStockChoice",
+              type: "rawlist",
+              choices: function() {
+                  var addStockChoiceArray = [];
+                  for (var i = 0; i < results.length; i++) {
+                      var addStockString = "ID: " + results[i].item_id + " " + results[i].product_name + ", Price: " + results[i].price + ", Quantity in Stock: " + results[i].stock_quantity;
+                      addStockChoiceArray.push(addStockString);
+                  }
+                  return addStockChoiceArray;
+              },
+              message: "Which item would you like to increase the stock quantity?"
+            },
+            {
+              name: "addStockAmount",
+              type: "input",
+              message: "How much would you like to add to this product's stock quantity? Please enter a whole number (integer).",
+              validate: function(value) {
+                if (isNaN(value) === false) {
+                  return true;
+                }
+                return false;
+              }
+            }
+        ]).then(function(answer) {
+            var chosenAddStock;
+            for (var i = 0; i < results.length; i++) {
+                if (addStockString === answer.addStockChoice) {
+                    chosenAddStock = addStockString;
+                }
+            }
+            var newStockAmount = 
+            connection.query("UPDATE products SET ? WHERE ?", 
+              [
+                {
+                    bid: answer.bidAmount
+                },
+                {
+                    item_id: chosenAddStock.item_id
+                }
+              ],
+              function(error) {
+                if (error) {
+                    throw err;
+                }
+            });
+        });
+        menu();
+    });
 }
 
 function addProduct() {
