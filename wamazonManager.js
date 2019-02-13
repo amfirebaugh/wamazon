@@ -92,7 +92,7 @@ function addQuantity() {
                   }
                   return addStockChoiceArray;
               },
-              message: "Which item would you like to increase the stock quantity?"
+              message: "Which item would you like to increase or decrease the stock quantity?"
             },
             {
               name: "addStockAmount",
@@ -127,17 +127,18 @@ function addQuantity() {
                     throw error;
                 }
             });
-            connection.query("SELECT * FROM products WHERE ?",
-              [
-                  {
-                      item_id: chosenItem.item_id
-                  }
-              ],
-              function(error) {
-                  if (error) {
-                      throw error;
-                  }
-              });
+            // I was going to use this query below to try to personalize the console.log under it but ran into some issues
+            // connection.query("SELECT * FROM products WHERE ?",
+            //   [
+            //       {
+            //           item_id: chosenItem.item_id
+            //       }
+            //   ],
+            //   function(error) {
+            //       if (error) {
+            //           throw error;
+            //       }
+            //   });
               console.log("To view these results, select the 'View Products for Sale' option in the Menu.");
               menu();
         });
