@@ -64,12 +64,8 @@ function purchase() {
             if (chosenProduct.stock_quantity > parseInt(answer.quantity)) {
             // if the stock_quantity is greater than then quantity asked for from the user...then update the table and tell client the cost of their order
 
-            // newQuantity doesn't seem to be working...or the update doesn't seem to be working
-            var newQuantity = chosenProduct.stock_quantity - answer.quantity;
-            console.log(newQuantity); // this is working... however the UPDATE below is not working...
-            console.log(chosenProduct.item_id);
-            // console.log(answer.newQuantity); undefined
-            // console.log(chosenProduct.newQuantity); undefined
+            var newQuantity = chosenProduct.stock_quantity - parseInt(answer.quantity);
+            
             connection.query(
                 "UPDATE products SET ? WHERE ?",
                 [
@@ -90,8 +86,6 @@ function purchase() {
             var orderPrice = chosenProduct.price * answer.quantity;
             // below shows the client the cost of their order, reminds them what they ordered, how many, and displays the price in the format example: $21.00 (two decimals)
             console.log("The cost of your order of " + answer.quantity + " " + chosenProduct.product_name + "(s) is: $" + orderPrice.toFixed(2) + "\n");
-
-            console.log(chosenProduct);
 
             } else {
             // If client asked for too many of an item the below code begins
