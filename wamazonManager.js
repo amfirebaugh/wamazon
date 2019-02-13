@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 
   connection.connect(function(err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    // console.log("connected as id " + connection.threadId);
     menu();
   });
 
@@ -37,7 +37,7 @@ function menu() {
         } else if (answer.choice === "Add New Product") {
             addProduct();
         } else if (answer.choice === "Exit") {
-            process.exit();
+            connection.end();
         }
     });
     
@@ -45,17 +45,21 @@ function menu() {
 
 // Can make below look better (the console.log)... do not want the JSON.stringify because it's one big paragraph, hard to read...
 function select() {
-    connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, results, fields) {
+    connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, results) {
         if (err) {
             throw err;
         }
         // below prints out the information for the manager to see the current stock
-        for (var i = 0; results.length > 0; i++) {
+        for (var i = 0; i < results.length; i++) {
             console.log("\n" + results[i].item_id + " " + results[i].product_name + " Price: " + results[i].price + " Quantity in Stock: " + results[i].stock_quantity);
-        }
+            
+        } 
+        console.log("testing testing 2");
+        menu();
     });
     // BELOW ISN'T WORKING? IT'S NOT RETURNING TO MY MENU?? IF I INSERT IT A LINE ABOVE THOUGH IT BREAKS
-    menu();
+    //console.log("testing testing");
+    
 }
 
 function selectLow() {
