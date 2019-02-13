@@ -51,15 +51,11 @@ function select() {
         }
         // below prints out the information for the manager to see the current stock
         for (var i = 0; i < results.length; i++) {
-            console.log("\n" + results[i].item_id + " " + results[i].product_name + " Price: " + results[i].price + " Quantity in Stock: " + results[i].stock_quantity);
+            console.log("\n" + results[i].item_id + " " + results[i].product_name + ", Price: " + results[i].price + ", Quantity in Stock: " + results[i].stock_quantity);
             
         } 
-        console.log("testing testing 2");
         menu();
-    });
-    // BELOW ISN'T WORKING? IT'S NOT RETURNING TO MY MENU?? IF I INSERT IT A LINE ABOVE THOUGH IT BREAKS
-    //console.log("testing testing");
-    
+    });   
 }
 
 function selectLow() {
@@ -70,12 +66,13 @@ function selectLow() {
         // below prints out the information for the manager to see any low-stock items
         
         // BELOW SEEMS TO WORK, BUT AN ERROR PRINTS AFTER IT??
-        for (var i = 0; results.length > 0; i++) {
+        for (var i = 0; i < results.length; i++) {
             var productAmount = parseInt(results[i].stock_quantity);
             if (productAmount <= 5) {
-                console.log("\n" + results[i].item_id + " " + results[i].product_name + " Price: " + results[i].price + " Quantity in Stock: " + results[i].stock_quantity);
+                console.log("\n" + "ID: " + results[i].item_id + " " + results[i].product_name + ", Price: " + results[i].price + ", Quantity in Stock: " + results[i].stock_quantity);
             }
         }
+        menu();
     });
 }
 
