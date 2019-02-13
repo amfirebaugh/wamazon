@@ -26,13 +26,13 @@ function menu() {
         name: "choice",
         type: "list",
         message: "What would you like to do?",
-        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
+        choices: ["View Products for Sale", "View Low Inventory", "Add/Subtrack to Inventory", "Add New Product", "Exit"]
     }).then(function(answer) {
         if (answer.choice === "View Products for Sale") {
             select();
         } else if (answer.choice === "View Low Inventory") {
             selectLow();
-        } else if (answer.choice === "Add to Inventory") {
+        } else if (answer.choice === "Add/Subtrack to Inventory") {
             addQuantity();
         } else if (answer.choice === "Add New Product") {
             addProduct();
@@ -88,8 +88,7 @@ function addQuantity() {
               choices: function() {
                   var addStockChoiceArray = [];
                   for (var i = 0; i < results.length; i++) {
-                      var addStockString = "ID: " + results[i].item_id + " " + results[i].product_name + ", Price: " + results[i].price + ", Quantity in Stock: " + results[i].stock_quantity;
-                      addStockChoiceArray.push(addStockString);
+                      addStockChoiceArray.push(results[i].product_name);
                   }
                   return addStockChoiceArray;
               },
@@ -98,7 +97,7 @@ function addQuantity() {
             {
               name: "addStockAmount",
               type: "input",
-              message: "How much would you like to add to this product's stock quantity? Please enter a whole number (integer).",
+              message: "What should be the new stock quantity for this product? Please enter a whole number (integer).",
               validate: function(value) {
                 if (isNaN(value) === false) {
                   return true;
@@ -107,30 +106,44 @@ function addQuantity() {
               }
             }
         ]).then(function(answer) {
-            var chosenAddStock;
+            var chosenItem;
             for (var i = 0; i < results.length; i++) {
-                if (addStockString === answer.addStockChoice) {
-                    chosenAddStock = addStockString;
+                if (results[i].product_name === answer.addStockChoice) {
+                    chosenItem = results[i];
                 }
             }
-            var newStockAmount = 
+            
             connection.query("UPDATE products SET ? WHERE ?", 
               [
                 {
-                    bid: answer.bidAmount
+                    stock_quantity: answer.addStockAmount
                 },
                 {
-                    item_id: chosenAddStock.item_id
+                    item_id: chosenItem.item_id
                 }
               ],
               function(error) {
                 if (error) {
-                    throw err;
+                    throw error;
                 }
             });
+            connection.query("SELECT * FROM products WHERE ?",
+              [
+                  {
+                      item_id: chosenItem.item_id
+                  }
+              ],
+              function(error) {
+                  if (error) {
+                      throw error;
+                  }
+              });
+              console.log("To view these results, select the 'View Products for Sale' option in the Menu.");
+              menu();
         });
-        menu();
+        
     });
+    
 }
 
 function addProduct() {
