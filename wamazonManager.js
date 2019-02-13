@@ -147,5 +147,59 @@ function addQuantity() {
 }
 
 function addProduct() {
-    console.log("addproduct function");
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) {
+            throw err;
+        }
+        inquirer.prompt([
+            {
+              name: "newProduct",
+              type: "input",
+              message: "What is the name of this new product? (100 character limit)"
+            },
+            {
+              name: "newDepartment",
+              type: "input",
+              message: "What is the department for this new product? (100 character limit)"
+            },
+            {
+              name: "newPrice",
+              type: "input",
+              message: "What is the price of this new product? (Please enter in the format like the following example: <10.50>.)",
+              validate: function(value) {
+                if (isNaN(value) === false) {
+                  return true;
+                }
+                return false;
+              }
+            },
+            {
+              name: "newStock",
+              type: "input",
+              message: "What is the stock quantity of this new product? (Please enter a whole number, integer.)",
+              validate: function(value) {
+                if (isNaN(value) === false) {
+                  return true;
+                }
+                return false;
+              }
+            }
+        ]).then(function(answer) {
+            connection.query("INSERT INTO products SET ?",
+            {
+              product_name: answer.newProduct,
+              department_name: answer.newDepartment,
+              price: answer.newPrice,
+              stock_quantity: answer.newPrice
+            },
+            function(err, res) {
+                if (err) {
+                    throw err;
+                }
+                console.log("New product now inserted. To view changed, select 'View Products for Sale' from Menu.");
+                menu();
+            }
+            );
+        });
+    });
 }
